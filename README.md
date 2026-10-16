@@ -5,7 +5,7 @@ Built by Stackwell Digital. No build step, no backend. Products and prices come 
 
 ## Files
 - `index.html` the whole site (HTML, CSS, JS)
-- `images/` product photos, one `<product id>.jpg` each
+- `images/` product photos (`<product id>.jpg`) and `logo.png`
 - `images.tsv` product id to Wix media file map
 - `scripts/fetch-images.sh` re-downloads the photos into `images/`
 

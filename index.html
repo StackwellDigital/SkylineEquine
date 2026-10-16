@@ -1,5 +1,6 @@
 <title>Skyline Equine</title>
 <meta name="claude:viewport-fit-sides" content="cover">
+<link rel="icon" href="images/logo.png">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Instrument+Sans:wght@400;500;600&display=swap">
 <style>
 /* Layout: slim promo bar, header, short hero with three service facts, filterable product grid, ordering info, footer. Cart is a slide-over drawer plus a mock checkout. */
@@ -42,7 +43,7 @@ a { color: inherit; }
 .wrap { max-width: 1180px; margin: 0 auto; }
 .bar { background: var(--ink); color: var(--bg); margin-left: calc(-1 * max(16px, env(safe-area-inset-left, 0px))); margin-right: calc(-1 * max(16px, env(safe-area-inset-right, 0px))); padding: 8px max(16px, env(safe-area-inset-right, 0px)) 8px max(16px, env(safe-area-inset-left, 0px)); font-size: 14px; text-align: center; }
 header.top { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 18px; flex-wrap: wrap; }
-.brand { font-family: var(--font-display); font-weight: 700; font-size: 26px; letter-spacing: 0.02em; text-decoration: none; }
+.brand { display: flex; align-items: center; gap: 12px; font-family: var(--font-display); font-weight: 700; font-size: 26px; letter-spacing: 0.02em; text-decoration: none; }
 .brand small { display: block; font-family: var(--font-body); font-weight: 500; font-size: 13px; letter-spacing: 0; color: var(--muted); }
 nav.main { display: flex; gap: 22px; flex-wrap: wrap; font-weight: 500; }
 nav.main a { text-decoration: none; padding-block: 4px; border-bottom: 2px solid transparent; }
@@ -85,7 +86,10 @@ section.shop { padding-block: 24px 48px; }
 .card .meta { color: var(--muted); font-size: 14px; display: flex; justify-content: space-between; gap: 8px; }
 .price { font-family: var(--font-display); font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; }
 .row { display: flex; gap: 8px; margin-top: auto; align-items: stretch; }
-.row select { flex: 1; min-width: 0; background: var(--bg); border: 1px solid var(--line); border-radius: 4px; padding: 8px; }
+.opts { display: grid; gap: 8px; }
+.opts select { width: 100%; min-width: 0; background: var(--bg); border: 1px solid var(--line); border-radius: 4px; padding: 8px; }
+.row .add { flex: 1; }
+.logo { width: 56px; height: 56px; border-radius: 4px; flex: none; }
 .add { background: var(--accent); color: var(--accent-ink); border: 0; border-radius: 4px; padding: 9px 14px; font-weight: 600; white-space: nowrap; }
 .add:hover { filter: brightness(1.08); }
 .hint { color: var(--accent); font-size: 13px; min-height: 18px; }
@@ -144,7 +148,7 @@ footer.foot { border-top: 1px solid var(--line); padding-block: 26px 90px; color
 
 <div class="wrap">
   <header class="top">
-    <a class="brand" href="#top">SKYLINE EQUINE<small>Bucas rugs and vaulting supplies, Langley BC</small></a>
+    <a class="brand" href="#top"><img class="logo" src="images/logo.png" alt="Skyline Equine logo" width="56" height="56"><span>SKYLINE EQUINE<small>Bucas rugs and vaulting supplies, Langley BC</small></span></a>
     <nav class="main" aria-label="Main">
       <a href="#shop">Shop</a>
       <a href="#vaulting">Vaulting</a>
@@ -258,8 +262,51 @@ const P = [
   ['wither','Bucas Wither Pad','725','Accessories',20,null,null,'#5b6b7a','small','Cushions the wither and protects the mane under any Bucas rug with neck attachment points.',['300g cushioned wadding','Silk-feel lining','Attaches to the neckline hook and loop','Wash it regularly']],
   ['ext1','Bucas Chest Extender Standard 12cm','801-12','Accessories',24,null,null,'#7d8791','small','T-bar style 12cm chest extender. Check the year tag inside your rug before ordering.',['Fits Freedom range','Fits Select quilts','Fits Prize coolers']],
   ['ext2','Bucas Chest Extender T-Bar Magnetic 12cm','802-12','Accessories',26,null,null,'#7d8791','small','T-bar magnetic 12cm chest extender. Check the year tag inside your rug before ordering.',['Fits Shamrock range 2016','Fits Buzz-Off range 2016','Fits Recuptex, Sun Shower and coolers 625/632/639 2016']],
-  ['ext3','Bucas Chest Extender Click’n Go Magnetic 12cm','803-12','Accessories',36,null,null,'#7d8791','small','Click’n Go magnetic 12cm chest extender in silver or blue. Check the year tag inside your rug before ordering.',['Fits Smartex range 2015 and newer','Fits Power range 2016','Fits Celtic range AW2016']],
+  ['ext3','Bucas Chest Extender Click’n Go Magnetic 12cm','803-12','Accessories',36,null,null,'#7d8791','small','Click’n Go magnetic 12cm chest extender. Check the year tag inside your rug before ordering.',['Fits Smartex range 2015 and newer','Fits Power range 2016','Fits Celtic range AW2016']],
 ].map((a, i) => ({ id:a[0], name:a[1], sku:a[2], cat:a[3], price:a[4], grams:a[5], sizes:a[6], tone:a[7], art:a[8], short:a[9], feats:a[10], order:i }));
+
+// Options read from skylineequine.com product pages (Oct 2026).
+const inch = (...n) => ({ t: 'Size', v: n.map((x) => x + '"') });
+const letters = (...v) => ({ t: 'Size', v });
+const ALL = [60, 63, 66, 69, 72, 75, 78, 81, 84];
+const OPTS = {
+  irish50: [inch(66, 69, 72, 75, 78, 81, 84)],
+  green300: [inch(66, 69, 72, 75, 78, 81, 84), { t: 'Color', v: ['Green/Navy trim', 'Green/Creme trim'] }],
+  green100: [inch(66, 69, 72, 75, 78, 81, 84), { t: 'Color', v: ['Green/Navy trim', 'Green/Creme trim'] }],
+  smx300: [inch(78, 81, 84)],
+  smx150: [inch(66, 69, 72, 75, 78, 81, 84, 86)],
+  pony300: [inch(42, 57, 60, 63)],
+  pony150: [inch(42, 48, 51, 57, 60, 63)],
+  pony50: [inch(42, 45, 48, 51, 54, 57, 60, 63)],
+  liner300: [inch(72, 75, 78, 81, 84)],
+  liner200: [inch(72, 75, 78, 81, 84)],
+  liner100: [inch(81)],
+  quiltS: [inch(...ALL)],
+  quiltD: [inch(60, 63, 66, 69, 72, 84)],
+  zmask: [letters('XXXS', 'XXS', 'XS', 'S', 'M', 'L', 'XL')],
+  brain: [inch(69, 72, 75, 78, 81, 84)],
+  xrange: [inch(...ALL)],
+  zebra: [inch(...ALL)],
+  fleece: [{ t: 'Color', v: ['Navy'] }, inch(75, 78, 81)],
+  power: [{ t: 'Color', v: ['Black/Silver'] }, inch(66, 69, 72, 75, 78, 81, 84)],
+  riding: [{ t: 'Color & size', v: ['Small Black/gold', 'Small Navy/Gold', 'Medium Black/Gold', 'Medium Navy/Silver', 'Large Navy/Silver', 'Extra Large Black/Gold', 'Extra Large Navy/Silver'] }],
+  atl300: [letters('S', 'M', 'L', 'XL')],
+  atl50: [letters('S', 'M', 'L', 'XL')],
+  xneck: [letters('S', 'M', 'L', 'XL')],
+  wither: null,
+  ext1: [{ t: 'Color & size', v: ['Navy 12 cm'] }],
+  ext2: [{ t: 'Color & size', v: ['Black 12 cm', 'Navy 12 cm'] }],
+  ext3: [{ t: 'Color & size', v: ['Black 12 cm', 'Navy 12 cm'] }],
+};
+P.forEach((p) => { p.opts = OPTS[p.id] || null; });
+function optsHtml(p) {
+  if (!p.opts) return '';
+  return '<div class="opts">' + p.opts.map((o) => `<select aria-label="${esc(o.t)} for ${esc(p.name)}" data-label="${esc(o.t)}"><option value="">${esc(o.t)}</option>${o.v.map((v) => `<option${o.v.length === 1 ? ' selected' : ''}>${esc(v)}</option>`).join('')}</select>`).join('') + '</div>';
+}
+function pick(root) {
+  const sels = [...root.querySelectorAll('.opts select')];
+  return { miss: sels.find((s) => !s.value), size: sels.map((s) => s.value).join(' / ') };
+}
 
 const CATS = ['All','Turnout','Layers','Fly & UV','Coolers & Riding','Neck covers','Accessories'];
 const FILLS = ['Any','50g','100g','150g','200g','300g'];
@@ -315,10 +362,8 @@ function renderGrid() {
         <h3>${esc(p.name)}</h3>
         <div class="meta"><span>${esc(p.cat)}${p.grams ? ' · ' + p.grams + 'g fill' : ''}</span><span>SKU ${esc(p.sku)}</span></div>
         <div class="price">${money(p.price)}</div>
-        <div class="row">
-          ${p.sizes ? `<select aria-label="Size for ${esc(p.name)}"><option value="">Size</option>${p.sizes.map((s) => `<option>${esc(s)}</option>`).join('')}</select>` : ''}
-          <button class="add" data-add="${p.id}">Add to cart</button>
-        </div>
+        ${optsHtml(p)}
+        <div class="row"><button class="add" data-add="${p.id}">Add to cart</button></div>
         <div class="hint" aria-live="polite"></div>
         <button class="link" data-view="${p.id}">Quick view</button>
       </div>
@@ -377,7 +422,7 @@ function renderCart(step) {
   el.innerHTML = `<header><h2>Your cart</h2><button class="x" data-close aria-label="Close">×</button></header>
     <div class="scroll">${S.cart.length ? S.cart.map((l) => { const p = P.find((x) => x.id === l.id); return `
       <div class="line"><div class="thumb">${art(p)}</div>
-        <div><div class="t">${esc(p.name)}</div><div class="s">${l.size ? 'Size ' + esc(l.size) + ' · ' : ''}${money(p.price)} each</div>
+        <div><div class="t">${esc(p.name)}</div><div class="s">${l.size ? esc(l.size) + ' · ' : ''}${money(p.price)} each</div>
         <div class="qty"><button data-dec="${l.key}" aria-label="Fewer">−</button><span>${l.qty}</span><button data-inc="${l.key}" aria-label="More">+</button></div></div>
         <div style="font-variant-numeric:tabular-nums;font-weight:600">${money(p.price * l.qty)}</div></div>`; }).join('') : '<p style="padding:24px 0;color:var(--muted)">Your cart is empty. Add a rug or a liner to see how checkout works.</p>'}</div>
     <footer>
@@ -398,8 +443,8 @@ function renderModal(id) {
       <div class="price">${money(p.price)}</div>
       <p>${esc(p.short)}</p>
       <ul>${p.feats.map((f) => `<li>${esc(f)}</li>`).join('')}</ul>
-      <div class="row">${p.sizes ? `<select id="mz" aria-label="Size"><option value="">Size</option>${p.sizes.map((s) => `<option>${esc(s)}</option>`).join('')}</select>` : ''}
-        <button class="add" data-madd="${p.id}">Add to cart</button></div>
+      ${optsHtml(p)}
+      <div class="row"><button class="add" data-madd="${p.id}">Add to cart</button></div>
       <div class="hint" id="mh" aria-live="polite"></div>
     </div></div>`;
 }
@@ -410,16 +455,16 @@ document.addEventListener('click', (e) => {
   if (t.dataset.cat) { S.cat = t.dataset.cat; renderChips(); renderGrid(); }
   else if (t.dataset.fill) { S.fill = t.dataset.fill; renderChips(); renderGrid(); }
   else if (t.dataset.add) {
-    const card = t.closest('.card'); const sel = card.querySelector('select'); const p = P.find((x) => x.id === t.dataset.add);
-    if (p.sizes && !sel.value) { card.querySelector('.hint').textContent = 'Pick a size first.'; sel.focus(); return; }
+    const card = t.closest('.card'); const p = P.find((x) => x.id === t.dataset.add); const c = pick(card);
+    if (c.miss) { card.querySelector('.hint').textContent = 'Pick a ' + c.miss.dataset.label.toLowerCase() + ' first.'; c.miss.focus(); return; }
     card.querySelector('.hint').textContent = 'Added to cart.';
-    addToCart(p.id, sel ? sel.value : '', 1);
+    addToCart(p.id, c.size, 1);
   }
   else if (t.dataset.view) { renderModal(t.dataset.view); openLayer('modal'); }
   else if (t.dataset.madd) {
-    const p = P.find((x) => x.id === t.dataset.madd); const sel = $('#mz');
-    if (p.sizes && !sel.value) { $('#mh').textContent = 'Pick a size first.'; sel.focus(); return; }
-    addToCart(p.id, sel ? sel.value : '', 1); renderCart(); openLayer('cart');
+    const p = P.find((x) => x.id === t.dataset.madd); const c = pick($('#modal'));
+    if (c.miss) { $('#mh').textContent = 'Pick a ' + c.miss.dataset.label.toLowerCase() + ' first.'; c.miss.focus(); return; }
+    addToCart(p.id, c.size, 1); renderCart(); openLayer('cart');
   }
   else if (t.id === 'fab') { renderCart(); openLayer('cart'); }
   else if (t.dataset.close !== undefined || t.id === 'scrim') closeLayer();

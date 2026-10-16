@@ -1,0 +1,437 @@
+<title>Skyline Equine</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Instrument+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: slim promo bar, header, short hero with three service facts, filterable product grid, ordering info, footer. Cart is a slide-over drawer plus a mock checkout. */
+:root {
+  --bg: #f1f5f8;
+  --surface: #ffffff;
+  --ink: #0e2233;
+  --muted: #4f5f6d;
+  --line: #d4dde4;
+  --sky: #dce9f2;
+  --accent: #b3282d;
+  --accent-ink: #ffffff;
+  --good: #1d6b4a;
+  --font-display: "Bricolage Grotesque", "Arial Narrow", Arial, sans-serif;
+  --font-body: "Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0a141d; --surface: #112230; --ink: #e8eef3; --muted: #9db0bf; --line: #24394a;
+    --sky: #17303f; --accent: #e5555a; --accent-ink: #1a0a0b; --good: #5cc59a; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0a141d; --surface: #112230; --ink: #e8eef3; --muted: #9db0bf; --line: #24394a;
+  --sky: #17303f; --accent: #e5555a; --accent-ink: #1a0a0b; --good: #5cc59a; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 16px; line-height: 1.5;
+  padding-block: 0;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+h1, h2, h3 { font-family: var(--font-display); font-weight: 700; line-height: 1.08; margin: 0; text-wrap: balance; letter-spacing: -0.01em; }
+p { margin: 0; }
+button, select, input { font: inherit; color: inherit; }
+button { cursor: pointer; }
+a { color: inherit; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.wrap { max-width: 1180px; margin: 0 auto; }
+.bar { background: var(--ink); color: var(--bg); margin-left: calc(-1 * max(16px, env(safe-area-inset-left, 0px))); margin-right: calc(-1 * max(16px, env(safe-area-inset-right, 0px))); padding: 8px max(16px, env(safe-area-inset-right, 0px)) 8px max(16px, env(safe-area-inset-left, 0px)); font-size: 14px; text-align: center; }
+header.top { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 18px; flex-wrap: wrap; }
+.brand { font-family: var(--font-display); font-weight: 700; font-size: 26px; letter-spacing: 0.02em; text-decoration: none; }
+.brand small { display: block; font-family: var(--font-body); font-weight: 500; font-size: 13px; letter-spacing: 0; color: var(--muted); }
+nav.main { display: flex; gap: 22px; flex-wrap: wrap; font-weight: 500; }
+nav.main a { text-decoration: none; padding-block: 4px; border-bottom: 2px solid transparent; }
+nav.main a:hover { border-color: var(--accent); }
+.hero { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 40px; align-items: end; padding-block: 36px 40px; }
+.hero h1 { font-size: clamp(36px, 6vw, 68px); }
+.hero p.lede { margin-top: 18px; max-width: 52ch; color: var(--muted); font-size: 18px; }
+.hero .cta { margin-top: 26px; display: flex; gap: 12px; flex-wrap: wrap; }
+.btn { border: 2px solid var(--ink); background: transparent; padding: 11px 20px; font-weight: 600; border-radius: 4px; text-decoration: none; display: inline-block; }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.btn:hover { filter: brightness(1.08); }
+.facts { display: grid; gap: 0; border-top: 2px solid var(--ink); }
+.facts div { padding: 14px 0; border-bottom: 1px solid var(--line); display: grid; grid-template-columns: 7.5em minmax(0, 1fr); gap: 12px; }
+.facts b { font-family: var(--font-display); font-size: 17px; }
+.facts span { color: var(--muted); }
+section.shop { padding-block: 24px 48px; }
+.shop-head { display: flex; justify-content: space-between; align-items: end; gap: 16px; flex-wrap: wrap; margin-bottom: 18px; }
+.shop-head h2 { font-size: clamp(28px, 4vw, 40px); }
+.tools { display: flex; gap: 10px; flex-wrap: wrap; }
+.tools input, .tools select { background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: 9px 12px; min-width: 0; }
+.tools input { width: 220px; max-width: 100%; }
+.chips { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+.chip { border: 1px solid var(--line); background: var(--surface); padding: 7px 14px; border-radius: 999px; font-weight: 500; font-size: 15px; }
+.chip[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.fillrow { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 22px; color: var(--muted); font-size: 15px; }
+.count { color: var(--muted); font-size: 14px; margin-bottom: 14px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 20px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; display: flex; flex-direction: column; min-width: 0; }
+.art { background: var(--sky); border-radius: 5px 5px 0 0; aspect-ratio: 10 / 7; display: grid; place-items: center; width: 100%; border: 0; padding: 10px; }
+.art svg { width: 100%; height: 100%; max-height: 100%; }
+.card .body { padding: 14px 14px 16px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
+.card h3 { font-size: 18px; line-height: 1.2; }
+.card .meta { color: var(--muted); font-size: 14px; display: flex; justify-content: space-between; gap: 8px; }
+.price { font-family: var(--font-display); font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.row { display: flex; gap: 8px; margin-top: auto; align-items: stretch; }
+.row select { flex: 1; min-width: 0; background: var(--bg); border: 1px solid var(--line); border-radius: 4px; padding: 8px; }
+.add { background: var(--accent); color: var(--accent-ink); border: 0; border-radius: 4px; padding: 9px 14px; font-weight: 600; white-space: nowrap; }
+.add:hover { filter: brightness(1.08); }
+.hint { color: var(--accent); font-size: 13px; min-height: 18px; }
+.link { background: none; border: 0; padding: 0; text-decoration: underline; color: var(--muted); font-size: 14px; text-align: left; }
+.empty { padding: 40px 0; color: var(--muted); }
+.vault { margin-top: 36px; border: 2px solid var(--ink); border-radius: 6px; padding: 22px; display: flex; gap: 20px; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+.vault h3 { font-size: 24px; }
+.vault p { color: var(--muted); max-width: 60ch; margin-top: 6px; }
+section.info { border-top: 2px solid var(--ink); padding-block: 36px 48px; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 28px 36px; }
+section.info h3 { font-size: 20px; margin-bottom: 8px; }
+section.info p, section.info li { color: var(--muted); font-size: 15px; }
+section.info ul { margin: 0; padding-left: 18px; }
+footer.foot { border-top: 1px solid var(--line); padding-block: 26px 90px; color: var(--muted); font-size: 14px; display: flex; gap: 12px 32px; flex-wrap: wrap; justify-content: space-between; }
+.demo { font-size: 13px; color: var(--muted); }
+.fab { position: fixed; right: calc(16px + env(safe-area-inset-right, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); background: var(--ink); color: var(--bg); border: 0; border-radius: 999px; padding: 13px 20px; font-weight: 600; box-shadow: 0 6px 22px rgba(0, 0, 0, 0.28); z-index: 20; }
+.fab .n { background: var(--accent); color: var(--accent-ink); border-radius: 999px; padding: 1px 9px; margin-left: 8px; font-variant-numeric: tabular-nums; }
+.scrim { position: fixed; inset: 0; background: rgba(5, 12, 18, 0.55); z-index: 30; }
+.panel { position: fixed; top: 0; right: 0; bottom: 0; width: min(440px, 100%); background: var(--surface); z-index: 31; display: flex; flex-direction: column; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); border-left: 1px solid var(--line); }
+.panel header { display: flex; justify-content: space-between; align-items: center; padding: 18px 20px; border-bottom: 1px solid var(--line); }
+.panel header h2 { font-size: 24px; }
+.x { background: none; border: 0; font-size: 28px; line-height: 1; padding: 4px 8px; }
+.panel .scroll { overflow-y: auto; padding: 8px 20px; flex: 1; }
+.panel footer { border-top: 1px solid var(--line); padding: 16px 20px; display: grid; gap: 10px; }
+.ship { height: 8px; background: var(--sky); border-radius: 999px; overflow: hidden; }
+.ship i { display: block; height: 100%; background: var(--good); width: 0; transition: width 0.25s; }
+.shiptxt { font-size: 14px; color: var(--muted); }
+.line { display: grid; grid-template-columns: 64px minmax(0, 1fr) auto; gap: 12px; padding: 14px 0; border-bottom: 1px solid var(--line); align-items: start; }
+.line .thumb { background: var(--sky); border-radius: 4px; padding: 4px; }
+.line .t { font-weight: 600; line-height: 1.25; }
+.line .s { font-size: 14px; color: var(--muted); }
+.qty { display: inline-flex; align-items: center; border: 1px solid var(--line); border-radius: 4px; margin-top: 8px; }
+.qty button { background: none; border: 0; width: 30px; height: 30px; font-size: 18px; }
+.qty span { min-width: 26px; text-align: center; font-variant-numeric: tabular-nums; }
+.sum { display: flex; justify-content: space-between; font-variant-numeric: tabular-nums; }
+.sum.total { font-weight: 700; font-size: 18px; }
+.modal { position: fixed; z-index: 31; inset: 0; display: grid; place-items: center; padding: 16px; pointer-events: none; }
+.modal .box { pointer-events: auto; background: var(--surface); border-radius: 8px; width: min(820px, 100%); max-height: 100%; overflow-y: auto; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); border: 1px solid var(--line); }
+.modal .pic { background: var(--sky); display: grid; place-items: center; padding: 24px; }
+.modal .txt { padding: 24px; display: grid; gap: 12px; align-content: start; position: relative; }
+.modal .txt h2 { font-size: 28px; padding-right: 36px; }
+.modal .txt .x { position: absolute; top: 12px; right: 12px; }
+.modal ul { margin: 0; padding-left: 18px; color: var(--muted); }
+.field { display: grid; gap: 4px; font-size: 14px; color: var(--muted); }
+.field input, .field select { background: var(--bg); border: 1px solid var(--line); border-radius: 4px; padding: 9px; color: var(--ink); width: 100%; }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.ok { color: var(--good); font-weight: 600; }
+@media (max-width: 760px) {
+  .hero { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+  .modal .box { grid-template-columns: minmax(0, 1fr); }
+  .modal .pic { padding: 12px; }
+  .two { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) { .ship i { transition: none; } }
+</style>
+
+<div class="bar">Free shipping on orders over $100 CAD to Canada and the continental US. Orders ship Wednesdays.</div>
+
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="#top">SKYLINE EQUINE<small>Bucas rugs and vaulting supplies, Langley BC</small></a>
+    <nav class="main" aria-label="Main">
+      <a href="#shop">Shop</a>
+      <a href="#vaulting">Vaulting</a>
+      <a href="#ordering">Ordering</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+
+  <div class="hero" id="top">
+    <div>
+      <h1>Bucas rugs, shipped from Langley to barns across Canada.</h1>
+      <p class="lede">Turnouts, liners, fly sheets, coolers and the small parts that keep them fitting. Pick a fill weight, choose a size, and order any hour of the day.</p>
+      <div class="cta">
+        <a class="btn primary" href="#shop">Shop Bucas</a>
+        <a class="btn" href="#vaulting">Vaulting supplies</a>
+      </div>
+    </div>
+    <div class="facts">
+      <div><b>Shipping</b><span>Free over $100 before tax. Weight-based under that.</span></div>
+      <div><b>Returns</b><span>30 days, unused, tags on, with an E/R authorization number.</span></div>
+      <div><b>Pay</b><span>Visa, Mastercard and PayPal, prices in CAD.</span></div>
+    </div>
+  </div>
+
+  <section class="shop" id="shop" aria-labelledby="shop-h">
+    <div class="shop-head">
+      <h2 id="shop-h">Shop Bucas</h2>
+      <div class="tools">
+        <input id="q" type="search" placeholder="Search rugs, masks, pads" aria-label="Search products">
+        <select id="sort" aria-label="Sort products">
+          <option value="feat">Featured</option>
+          <option value="lo">Price, low to high</option>
+          <option value="hi">Price, high to low</option>
+          <option value="az">Name, A to Z</option>
+        </select>
+      </div>
+    </div>
+    <div class="chips" id="cats" role="group" aria-label="Category"></div>
+    <div class="fillrow"><span>Fill weight</span><div class="chips" id="fills" role="group" aria-label="Fill weight" style="margin:0"></div></div>
+    <div class="count" id="count" aria-live="polite"></div>
+    <div class="grid" id="grid"></div>
+
+    <div class="vault" id="vaulting">
+      <div>
+        <h3>Vaulting supplies</h3>
+        <p>Surcingles, rollers, pads and shoes for equestrian vaulting and hippotherapy. Vaulting items are quoted by request, so tell us what you need and we will reply with pricing.</p>
+      </div>
+      <a class="btn primary" href="#contact">Request a quote</a>
+    </div>
+  </section>
+
+  <section class="info" id="ordering" aria-label="Ordering information">
+    <div><h3>Our guarantee</h3><p>Every order is inspected before it ships, so what arrives is the quality you expected.</p></div>
+    <div><h3>Shipping</h3><p>Free on orders over $100 before tax, continental US and Canada. Shipping under that is weight-based with no fees at the door. Orders go out Wednesdays. International shipping is quoted before we process it.</p></div>
+    <div><h3>Exchanges and refunds</h3>
+      <ul><li>Within 30 days of purchase</li><li>Original receipt, unused, tags attached</li><li>Request an E/R form from Susan, then ship it insured with the authorization number on the box</li></ul>
+    </div>
+    <div><h3>Gift wrapping</h3><p>You shop, we wrap and ship to the recipient, for any occasion.</p></div>
+  </section>
+
+  <footer class="foot" id="contact">
+    <div>
+      <b>Skyline Equine</b><br>
+      Box 5000, Langley BC, Canada<br>
+      Phone 604-329-2157<br>
+      susan@skylineequine.com
+    </div>
+    <div class="demo">Design demo prepared by Stackwell Digital. Products and prices come from skylineequine.com. Orders placed here are not real and nothing is charged.</div>
+  </footer>
+</div>
+
+<button class="fab" id="fab" aria-label="Open cart">Cart <span class="n" id="fabn">0</span></button>
+
+<div id="layer" hidden>
+  <div class="scrim" id="scrim"></div>
+  <aside class="panel" id="cart" role="dialog" aria-modal="true" aria-label="Cart" hidden></aside>
+  <div class="modal" id="modal" hidden></div>
+</div>
+
+<script>
+const FREE_AT = 100;
+const RUG = ['60"','63"','66"','69"','72"','75"','78"','81"','84"'];
+const PONY = ['54"','57"','60"','63"'];
+const MASK = ['XS','S','M','L','XL'];
+const NECK = ['S','M','L'];
+const P = [
+  // id, name, sku, cat, price, grams, sizes, tone, art, short, features
+  ['irish50','Bucas Irish Turnout & Neck 50g','536','Turnout',230,50,RUG,'#1f3b57','rug','Waterproof, breathable rip-stop turnout with the neck included.',['1200 denier rip-stop outer','T-bar with magnetic Snap-lock front','Silk-feel lining and shoulder darts','Works with Bucas quilts and coolers']],
+  ['green300','Bucas Green-Line 300g Turnout','528','Turnout',216,300,RUG,'#2e6b45','rug','Eco turnout built from recycled fibres, with 300g of fill.',['600D rip-stop from recycled bottles','Recycled lining, straps and binding','T-bar with magnetic Snap-lock','Combi Neck attachment points']],
+  ['green100','Bucas Green-Line 100g Turnout','527','Turnout',206,100,RUG,'#2e6b45','rug','The same recycled build as the 300g, with a lighter 100g fill.',['600D rip-stop from recycled bottles','Recycled lining, straps and binding','T-bar with magnetic Snap-lock','Combi Neck attachment points']],
+  ['smx300','Bucas Smartex Turnout 300g Big Neck','622','Turnout',386,300,RUG,'#26292e','rug','A wider cut for stallions and broad-shouldered breeds like Friesians, Andalusians and drafts.',['Stay-dry, anti-bacterial lining','Click’n Go front with magnetic Snap-lock','Ballistic nylon, waterproof and breathable','Reflective strips on tail flap and front']],
+  ['smx150','Bucas Smartex Turnout 150g','623','Turnout',368,150,RUG,'#26292e','rug','Versatile turnout that can go on a wet horse after a ride or a wash.',['Stay-dry lining wicks moisture away','Click’n Go front with magnetic Snap-lock','Heat-reflective aluminium coating','Elastic leg straps and cross surcingles']],
+  ['pony300','Bucas Pony Irish Turnout 300g','654P','Turnout',174,300,PONY,'#7a1f2a','rug','Pony-cut Irish turnout, 300g fill.',['1200 denier rip-stop, waterproof','Silk-feel lining, shoulder darts','T-bar with magnetic Snap-lock','Combi Neck sold separately']],
+  ['pony150','Bucas Pony Irish Turnout 150g','659P','Turnout',160,150,PONY,'#7a1f2a','rug','Pony-cut Irish turnout, 150g fill.',['1200 denier rip-stop, waterproof','Silk-feel lining, shoulder darts','T-bar with magnetic Snap-lock','Combi Neck sold separately']],
+  ['pony50','Bucas Pony Irish Turnout 50g','656P','Turnout',146,50,PONY,'#7a1f2a','rug','Pony-cut Irish turnout, 50g fill.',['1200 denier rip-stop, waterproof','Silk-feel lining, shoulder darts','T-bar with magnetic Snap-lock','Combi Neck sold separately']],
+  ['liner300','Bucas Liner 300g','553','Layers',112,300,RUG,'#5b6b7a','rug','Turns a light turnout into a heavyweight winter rug.',['Quilted polyester outer','Dermo-care lining','Front and rear attachment points','Reduced depth to sit under Bucas rugs']],
+  ['liner200','Bucas Liner 200g','552','Layers',106,200,RUG,'#5b6b7a','rug','The middle weight for transitional autumn weather.',['Quilted polyester outer','Dermo-care lining','Front and rear attachment points','Reduced depth to sit under Bucas rugs']],
+  ['liner100','Bucas Liner 100g','551','Layers',100,100,RUG,'#5b6b7a','rug','A light layer that adds warmth on cool nights.',['Quilted polyester outer','Dermo-care lining','Front and rear attachment points','Reduced depth to sit under Bucas rugs']],
+  ['quiltS','Bucas Quilt 50g Silky Lining','458','Layers',132,50,RUG,'#3c4a73','rug','A stable or under rug with a silk-feel lining that cuts down on rubbing.',['50g insulation','T-bar with magnetic Snap-lock','External cross surcingles','Attaches to Bucas turnout and stable rugs']],
+  ['quiltD','Bucas Quilt 50g Stay-Dry Lining','457','Layers',142,50,RUG,'#3c4a73','rug','The same quilt with a wicking Stay-Dry lining.',['50g insulation','Stay-Dry lining wicks moisture','External cross surcingles','Attaches to Bucas turnout and stable rugs']],
+  ['zmask','Bucas Buzz-Off Deluxe Fly Mask with Ears, Zebra','574','Fly & UV',60,null,MASK,'zebra','mask','Lightweight mask with reinforced darts that hold the mesh off the eyes.',['Insect and sun protection','Zebra print mesh','Sizing follows the blanket size you wear','Sold on its own or with a Zebra rug']],
+  ['brain','Bucas Buzz-Off Rain with Detachable Neck','534','Fly & UV',240,null,RUG,'#2a6f8f','rug','Waterproof on top, fly mesh below, for changeable summer weather.',['Roughly 80% UVA and UVB reduction','Detachable elasticated belly pad','Removable neck','Lightweight and breathable']],
+  ['xrange','Bucas Buzz-Off X-Range Full Neck','522','Fly & UV',194,null,RUG,'#2a6f8f','rug','Extra-deep mesh sides that keep flies off and let air move around the legs.',['Belly wrap with 3 surcingles','Integrated cap keeps the neck in place','Ears stay free, fly mask optional','Protects against sun bleaching']],
+  ['zebra','Buzz-Off Zebra with Detachable Neck','524','Fly & UV',200,null,RUG,'zebra','rug','Fine zebra-print mesh that blocks even the smallest insects.',['Elasticated brow band holds the neck on','Belly pad and large tail flap','Neck piece can come off','Matching Zebra fly mask sold separately']],
+  ['fleece','Bucas Show-Line Fleece Cooler 400g','460','Coolers & Riding',176,null,RUG,'#1f3b57','rug','Premium 400g fleece that looks sharp at the show and keeps the horse warm.',['Shaped back','T-bar front closure','Contrasting binding and piping','Deluxe tail cord']],
+  ['power','Bucas Power Cooler with Detachable Neck','532','Coolers & Riding',156,null,RUG,'#26292e','rug','Single-layer Stay-Dry cooler for sweat, travel, competition and light stable use.',['Wicks moisture so the horse dries faster','Neck detaches','Machine washable','Black']],
+  ['riding','Bucas Riding Rug','638','Coolers & Riding',108,null,RUG,'#26292e','rug','All-weather exercise rug with reflective strips for dark winter rides.',['Rip-stop, waterproof and breathable','Anti-bacterial Stay-Dry lining','Hook and loop at the withers','Fits under or over the saddle flaps']],
+  ['atl300','Bucas Atlantic Turnout Combi Neck 300g','445','Neck covers',152,300,NECK,'#1f3b57','neck','Rugged neck cover for the Atlantic turnout range.',['Dermo-care lining with wicking','Ballistic nylon, waterproof and breathable','Velcro closures','Fits Bucas rugs with Combi Neck points']],
+  ['atl50','Bucas Atlantic Turnout Combi Neck 50g','444','Neck covers',136,50,NECK,'#1f3b57','neck','Lighter Atlantic neck cover for milder days.',['Dermo-care lining with wicking','Ballistic nylon, waterproof and breathable','Velcro closures','Fits Bucas rugs with Combi Neck points']],
+  ['xneck','Bucas X-Range Turnout Neck Cover','616','Neck covers',78,null,NECK,'#26292e','neck','Neck cover for the X-Range turnouts.',['Matches the X-Range turnout line']],
+  ['wither','Bucas Wither Pad','725','Accessories',20,null,null,'#5b6b7a','small','Cushions the wither and protects the mane under any Bucas rug with neck attachment points.',['300g cushioned wadding','Silk-feel lining','Attaches to the neckline hook and loop','Wash it regularly']],
+  ['ext1','Bucas Chest Extender Standard 12cm','801-12','Accessories',24,null,null,'#7d8791','small','T-bar style 12cm chest extender. Check the year tag inside your rug before ordering.',['Fits Freedom range','Fits Select quilts','Fits Prize coolers']],
+  ['ext2','Bucas Chest Extender T-Bar Magnetic 12cm','802-12','Accessories',26,null,null,'#7d8791','small','T-bar magnetic 12cm chest extender. Check the year tag inside your rug before ordering.',['Fits Shamrock range 2016','Fits Buzz-Off range 2016','Fits Recuptex, Sun Shower and coolers 625/632/639 2016']],
+  ['ext3','Bucas Chest Extender Click’n Go Magnetic 12cm','803-12','Accessories',36,null,null,'#7d8791','small','Click’n Go magnetic 12cm chest extender in silver or blue. Check the year tag inside your rug before ordering.',['Fits Smartex range 2015 and newer','Fits Power range 2016','Fits Celtic range AW2016']],
+].map((a, i) => ({ id:a[0], name:a[1], sku:a[2], cat:a[3], price:a[4], grams:a[5], sizes:a[6], tone:a[7], art:a[8], short:a[9], feats:a[10], order:i }));
+
+const CATS = ['All','Turnout','Layers','Fly & UV','Coolers & Riding','Neck covers','Accessories'];
+const FILLS = ['Any','50g','100g','150g','200g','300g'];
+const S = { cat:'All', fill:'Any', q:'', sort:'feat', cart:[], view:null };
+const $ = (s) => document.querySelector(s);
+const money = (n) => '$' + n.toFixed(2);
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+// Real photo first (images/<id>.jpg from scripts/fetch-images.sh); drawn silhouette if the file is missing.
+function art(p) {
+  return `<img src="images/${p.id}.jpg" alt="${esc(p.name)}" loading="lazy" style="width:100%;height:100%;object-fit:contain;mix-blend-mode:normal;border-radius:3px" onerror="this.outerHTML=window.__fb('${p.id}')">`;
+}
+window.__fb = (id) => artSvg(P.find((x) => x.id === id));
+function artSvg(p) {
+  const zebra = p.tone === 'zebra';
+  const fill = zebra ? '#e9edf0' : p.tone;
+  const id = 'z' + p.id;
+  const stripes = zebra ? `<clipPath id="${id}"><path d="M30 30 Q60 18 100 22 Q140 18 172 34 L180 70 Q184 100 168 118 L150 124 Q100 132 52 124 L34 116 Q20 90 24 60 Z"/></clipPath><g clip-path="url(#${id})" stroke="#15191d" stroke-width="7" stroke-linecap="round">${[0,1,2,3,4,5,6,7,8,9].map((i)=>`<path d="M${20+i*17} 10 l-14 130"/>`).join('')}</g>` : '';
+  let svg;
+  if (p.art === 'rug') {
+    svg = `<path d="M30 30 Q60 18 100 22 Q140 18 172 34 L180 70 Q184 100 168 118 L150 124 Q100 132 52 124 L34 116 Q20 90 24 60 Z" fill="${fill}" stroke="#b3282d" stroke-width="3"/>${stripes}<path d="M70 26 L66 126 M130 22 L134 128" stroke="#b3282d" stroke-width="2.5" opacity=".9" fill="none"/><circle cx="34" cy="62" r="4" fill="#d8dde2"/><path d="M180 70 q14 4 12 22" stroke="#b3282d" stroke-width="3" fill="none"/>`;
+  } else if (p.art === 'mask') {
+    svg = `<path d="M70 40 L62 12 L84 32 Z M130 40 L138 12 L116 32 Z" fill="#15191d"/><path d="M100 30 Q142 30 140 78 Q138 118 100 128 Q62 118 60 78 Q58 30 100 30 Z" fill="#e9edf0" stroke="#b3282d" stroke-width="3"/><g clip-path="url(#${id}m)" stroke="#15191d" stroke-width="6" stroke-linecap="round"><path d="M72 30 l-8 60 M90 28 l-6 80 M108 28 l2 90 M126 30 l8 70"/></g><clipPath id="${id}m"><path d="M100 30 Q142 30 140 78 Q138 118 100 128 Q62 118 60 78 Q58 30 100 30 Z"/></clipPath><ellipse cx="82" cy="72" rx="9" ry="12" fill="#15191d" opacity=".8"/><ellipse cx="118" cy="72" rx="9" ry="12" fill="#15191d" opacity=".8"/>`;
+  } else if (p.art === 'neck') {
+    svg = `<path d="M30 100 Q40 40 100 34 Q160 40 170 100 L148 104 Q142 66 100 62 Q58 66 52 104 Z" fill="${fill}" stroke="#b3282d" stroke-width="3"/><path d="M52 104 l-6 12 M148 104 l6 12" stroke="#b3282d" stroke-width="3"/><circle cx="100" cy="62" r="3.5" fill="#d8dde2"/>`;
+  } else {
+    svg = `<rect x="32" y="52" width="136" height="36" rx="6" fill="${fill}" stroke="#b3282d" stroke-width="3"/><rect x="82" y="46" width="36" height="48" rx="5" fill="none" stroke="#d8dde2" stroke-width="5"/><path d="M96 70 h8" stroke="#d8dde2" stroke-width="4"/>`;
+  }
+  return `<svg viewBox="0 0 200 140" role="img" aria-label="${esc(p.name)}">${svg}</svg>`;
+}
+
+function visible() {
+  let list = P.filter((p) => (S.cat === 'All' || p.cat === S.cat) && (S.fill === 'Any' || (p.grams && p.grams + 'g' === S.fill)) && (!S.q || (p.name + ' ' + p.cat + ' ' + p.sku).toLowerCase().includes(S.q)));
+  if (S.sort === 'lo') list.sort((a, b) => a.price - b.price);
+  if (S.sort === 'hi') list.sort((a, b) => b.price - a.price);
+  if (S.sort === 'az') list.sort((a, b) => a.name.localeCompare(b.name));
+  return list;
+}
+
+function renderChips() {
+  $('#cats').innerHTML = CATS.map((c) => `<button class="chip" aria-pressed="${S.cat === c}" data-cat="${esc(c)}">${esc(c)}</button>`).join('');
+  $('#fills').innerHTML = FILLS.map((c) => `<button class="chip" aria-pressed="${S.fill === c}" data-fill="${c}">${c}</button>`).join('');
+}
+
+function renderGrid() {
+  const list = visible();
+  $('#count').textContent = list.length + (list.length === 1 ? ' product' : ' products');
+  if (!list.length) { $('#grid').innerHTML = '<div class="empty">Nothing matches those filters. Clear the fill weight or search to see more.</div>'; return; }
+  $('#grid').innerHTML = list.map((p) => `
+    <article class="card" data-id="${p.id}">
+      <button class="art" data-view="${p.id}" aria-label="Quick view, ${esc(p.name)}">${art(p)}</button>
+      <div class="body">
+        <h3>${esc(p.name)}</h3>
+        <div class="meta"><span>${esc(p.cat)}${p.grams ? ' · ' + p.grams + 'g fill' : ''}</span><span>SKU ${esc(p.sku)}</span></div>
+        <div class="price">${money(p.price)}</div>
+        <div class="row">
+          ${p.sizes ? `<select aria-label="Size for ${esc(p.name)}"><option value="">Size</option>${p.sizes.map((s) => `<option>${esc(s)}</option>`).join('')}</select>` : ''}
+          <button class="add" data-add="${p.id}">Add to cart</button>
+        </div>
+        <div class="hint" aria-live="polite"></div>
+        <button class="link" data-view="${p.id}">Quick view</button>
+      </div>
+    </article>`).join('');
+}
+
+function addToCart(id, size, qty) {
+  const p = P.find((x) => x.id === id);
+  const key = id + '|' + (size || '');
+  const hit = S.cart.find((l) => l.key === key);
+  if (hit) hit.qty += qty || 1; else S.cart.push({ key, id, size, qty: qty || 1 });
+  updateFab();
+  if (!$('#cart').hidden) renderCart();
+}
+const subtotal = () => S.cart.reduce((n, l) => n + P.find((p) => p.id === l.id).price * l.qty, 0);
+function updateFab() { $('#fabn').textContent = S.cart.reduce((n, l) => n + l.qty, 0); }
+
+function openLayer(which) {
+  $('#layer').hidden = false;
+  $('#cart').hidden = which !== 'cart';
+  $('#modal').hidden = which !== 'modal';
+}
+function closeLayer() { $('#layer').hidden = true; $('#cart').hidden = true; $('#modal').hidden = true; $('#fab').focus(); }
+
+function renderCart(step) {
+  const el = $('#cart');
+  const sub = subtotal();
+  const left = Math.max(0, FREE_AT - sub);
+  const pct = Math.min(100, (sub / FREE_AT) * 100);
+  if (step === 'done') {
+    el.innerHTML = `<header><h2>Order received</h2><button class="x" data-close aria-label="Close">×</button></header>
+      <div class="scroll"><p class="ok" style="margin-top:16px">Demo order placed. Nothing was charged.</p><p style="margin-top:10px;color:var(--muted)">On the live shop this is where the customer gets an order number and a confirmation email, and Susan gets the order for Wednesday shipping.</p></div>
+      <footer><button class="btn primary" data-reset>Keep browsing</button></footer>`;
+    return;
+  }
+  if (step === 'checkout') {
+    const zone = S.zone || 'BC';
+    const est = { BC: 12, CA: 18, US: 24 }[zone];
+    const ship = sub >= FREE_AT ? 0 : est;
+    el.innerHTML = `<header><h2>Checkout</h2><button class="x" data-close aria-label="Close">×</button></header>
+      <form class="scroll" id="co" style="display:grid;gap:12px;align-content:start;padding-top:16px">
+        <div class="two"><label class="field">First name<input id="fn" required></label><label class="field">Last name<input id="ln" required></label></div>
+        <label class="field">Email<input id="em" type="email" required></label>
+        <label class="field">Address<input id="ad" required></label>
+        <div class="two"><label class="field">City<input id="ci" required></label>
+        <label class="field">Shipping zone<select id="zn"><option value="BC"${zone==='BC'?' selected':''}>British Columbia</option><option value="CA"${zone==='CA'?' selected':''}>Rest of Canada</option><option value="US"${zone==='US'?' selected':''}>Continental US</option></select></label></div>
+        <p class="demo">Demo only. No payment details are collected here. The live shop would hand off to Visa, Mastercard or PayPal.</p>
+        <div class="sum"><span>Subtotal</span><span>${money(sub)}</span></div>
+        <div class="sum"><span>Shipping${sub >= FREE_AT ? ' (free over $100)' : ' (demo estimate)'}</span><span>${ship ? money(ship) : 'Free'}</span></div>
+        <div class="sum total"><span>Total before tax</span><span>${money(sub + ship)}</span></div>
+        <button class="btn primary" type="submit">Place demo order</button>
+        <button class="link" type="button" data-back>Back to cart</button>
+      </form>`;
+    return;
+  }
+  el.innerHTML = `<header><h2>Your cart</h2><button class="x" data-close aria-label="Close">×</button></header>
+    <div class="scroll">${S.cart.length ? S.cart.map((l) => { const p = P.find((x) => x.id === l.id); return `
+      <div class="line"><div class="thumb">${art(p)}</div>
+        <div><div class="t">${esc(p.name)}</div><div class="s">${l.size ? 'Size ' + esc(l.size) + ' · ' : ''}${money(p.price)} each</div>
+        <div class="qty"><button data-dec="${l.key}" aria-label="Fewer">−</button><span>${l.qty}</span><button data-inc="${l.key}" aria-label="More">+</button></div></div>
+        <div style="font-variant-numeric:tabular-nums;font-weight:600">${money(p.price * l.qty)}</div></div>`; }).join('') : '<p style="padding:24px 0;color:var(--muted)">Your cart is empty. Add a rug or a liner to see how checkout works.</p>'}</div>
+    <footer>
+      <div class="ship" aria-hidden="true"><i style="width:${pct}%"></i></div>
+      <div class="shiptxt">${sub >= FREE_AT ? 'Free shipping unlocked.' : sub ? `Add ${money(left)} more for free shipping.` : 'Free shipping over $100 before tax.'}</div>
+      <div class="sum total"><span>Subtotal</span><span>${money(sub)}</span></div>
+      <button class="btn primary" data-checkout ${S.cart.length ? '' : 'disabled'}>Checkout</button>
+    </footer>`;
+}
+
+function renderModal(id) {
+  const p = P.find((x) => x.id === id);
+  $('#modal').innerHTML = `<div class="box" role="dialog" aria-modal="true" aria-label="${esc(p.name)}">
+    <div class="pic">${art(p)}</div>
+    <div class="txt"><button class="x" data-close aria-label="Close">×</button>
+      <h2>${esc(p.name)}</h2>
+      <div class="meta" style="color:var(--muted);font-size:14px">SKU ${esc(p.sku)} · ${esc(p.cat)}${p.grams ? ' · ' + p.grams + 'g fill' : ''}</div>
+      <div class="price">${money(p.price)}</div>
+      <p>${esc(p.short)}</p>
+      <ul>${p.feats.map((f) => `<li>${esc(f)}</li>`).join('')}</ul>
+      <div class="row">${p.sizes ? `<select id="mz" aria-label="Size"><option value="">Size</option>${p.sizes.map((s) => `<option>${esc(s)}</option>`).join('')}</select>` : ''}
+        <button class="add" data-madd="${p.id}">Add to cart</button></div>
+      <div class="hint" id="mh" aria-live="polite"></div>
+    </div></div>`;
+}
+
+document.addEventListener('click', (e) => {
+  const t = e.target.closest('button, a');
+  if (!t) return;
+  if (t.dataset.cat) { S.cat = t.dataset.cat; renderChips(); renderGrid(); }
+  else if (t.dataset.fill) { S.fill = t.dataset.fill; renderChips(); renderGrid(); }
+  else if (t.dataset.add) {
+    const card = t.closest('.card'); const sel = card.querySelector('select'); const p = P.find((x) => x.id === t.dataset.add);
+    if (p.sizes && !sel.value) { card.querySelector('.hint').textContent = 'Pick a size first.'; sel.focus(); return; }
+    card.querySelector('.hint').textContent = 'Added to cart.';
+    addToCart(p.id, sel ? sel.value : '', 1);
+  }
+  else if (t.dataset.view) { renderModal(t.dataset.view); openLayer('modal'); }
+  else if (t.dataset.madd) {
+    const p = P.find((x) => x.id === t.dataset.madd); const sel = $('#mz');
+    if (p.sizes && !sel.value) { $('#mh').textContent = 'Pick a size first.'; sel.focus(); return; }
+    addToCart(p.id, sel ? sel.value : '', 1); renderCart(); openLayer('cart');
+  }
+  else if (t.id === 'fab') { renderCart(); openLayer('cart'); }
+  else if (t.dataset.close !== undefined || t.id === 'scrim') closeLayer();
+  else if (t.dataset.inc) { S.cart.find((l) => l.key === t.dataset.inc).qty++; updateFab(); renderCart(); }
+  else if (t.dataset.dec) { const l = S.cart.find((x) => x.key === t.dataset.dec); l.qty--; if (l.qty < 1) S.cart = S.cart.filter((x) => x !== l); updateFab(); renderCart(); }
+  else if (t.dataset.checkout !== undefined) renderCart('checkout');
+  else if (t.dataset.back !== undefined) renderCart();
+  else if (t.dataset.reset !== undefined) closeLayer();
+});
+$('#scrim').addEventListener('click', closeLayer);
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !$('#layer').hidden) closeLayer(); });
+document.addEventListener('change', (e) => { if (e.target.id === 'zn') { S.zone = e.target.value; renderCart('checkout'); } });
+document.addEventListener('submit', (e) => {
+  if (e.target.id === 'co') { e.preventDefault(); S.cart = []; S.zone = null; updateFab(); renderCart('done'); }
+});
+$('#q').addEventListener('input', (e) => { S.q = e.target.value.trim().toLowerCase(); renderGrid(); });
+$('#sort').addEventListener('change', (e) => { S.sort = e.target.value; renderGrid(); });
+
+// Start with a realistic working state: a couple of items already in the cart is NOT forced; shop loads full.
+renderChips(); renderGrid(); updateFab();
+</script>

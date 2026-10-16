@@ -69,3 +69,14 @@ const OPTS = {
   ext3: [{ t: 'Color & size', v: ['Black 12 cm', 'Navy 12 cm'] }],
 };
 P.forEach((p) => { p.opts = OPTS[p.id] || null; });
+
+// Products that are the same garment in different fill weights (or linings) are shown as one card.
+// members: [product id, label shown in the selector], listed lightest first.
+const FAMILIES = [
+  { id: 'green', name: 'Bucas Green-Line Turnout', vlabel: 'Fill weight', intro: 'Eco turnout built from recycled fibres, in a light 100g or a heavy 300g fill.', members: [['green100', '100g'], ['green300', '300g']] },
+  { id: 'smx', name: 'Bucas Smartex Turnout', vlabel: 'Fill weight', intro: 'Stay-dry turnout that can go on a wet horse. The 300g is cut wider as a Big Neck for stallions and broad breeds.', members: [['smx150', '150g'], ['smx300', '300g Big Neck']] },
+  { id: 'pony', name: 'Bucas Pony Irish Turnout', vlabel: 'Fill weight', intro: 'Pony-cut Irish turnout in 50g, 150g and 300g fills.', members: [['pony50', '50g'], ['pony150', '150g'], ['pony300', '300g']] },
+  { id: 'liner', name: 'Bucas Liner', vlabel: 'Fill weight', intro: 'Quilted liner that sits under Bucas rugs. Pick the weight for the weather.', members: [['liner100', '100g'], ['liner200', '200g'], ['liner300', '300g']] },
+  { id: 'quilt', name: 'Bucas Quilt 50g', vlabel: 'Lining', intro: 'A stable or under rug with 50g insulation, in a silky or a wicking Stay-Dry lining.', members: [['quiltS', 'Silky lining'], ['quiltD', 'Stay-Dry lining']] },
+  { id: 'atl', name: 'Bucas Atlantic Turnout Combi Neck', vlabel: 'Fill weight', intro: 'Neck cover for the Atlantic turnout range, in a light 50g or a heavy 300g fill.', members: [['atl50', '50g'], ['atl300', '300g']] },
+];

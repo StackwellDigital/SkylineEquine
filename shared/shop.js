@@ -11,7 +11,7 @@
 
   const CATS = ['All', 'Turnout', 'Layers', 'Fly & UV', 'Coolers & Riding', 'Neck covers', 'Accessories'];
   const FILLS = ['Any', '50g', '100g', '150g', '200g', '300g'];
-  const S = { cat: 'All', fill: 'Any', q: '', sort: 'feat', size: '', cart: [], zone: null };
+  const S = { cat: 'All', fill: 'Any', q: '', sort: 'feat', size: '', cart: [], zone: null, sel: {}, msel: '' };
 
   // ---------- drawn fallback art (used only if a photo file is missing) ----------
   function artSvg(p) {
@@ -36,53 +36,82 @@
     return '<div class="opts">' + p.opts.map((o) => `<select aria-label="${esc(o.t)} for ${esc(p.name)}" data-label="${esc(o.t)}"><option value="">${esc(o.t)}</option>${o.v.map((v) => `<option${o.v.length === 1 ? ' selected' : ''}>${esc(v)}</option>`).join('')}</select>`).join('') + '</div>';
   }
   function pick(root) {
-    const sels = [...root.querySelectorAll('.opts select')];
+    const sels = [...root.querySelectorAll('.opts select:not(.vsel)')];
     return { miss: sels.find((s) => !s.value), size: sels.map((s) => s.value).join(' / ') };
   }
   const hasSize = (p, size) => !!(p.opts && p.opts.some((o) => o.t === 'Size' && o.v.includes(size)));
   const ALL_SIZES = [...new Set(P.flatMap((p) => (p.opts || []).filter((o) => o.t === 'Size' && o.v[0].endsWith('"')).flatMap((o) => o.v)))].sort((a, b) => parseInt(a) - parseInt(b));
 
+  // ---------- groups: same garment, several fills, one card ----------
+  const FAMS = typeof FAMILIES !== 'undefined' ? FAMILIES : [];
+  const byId = (id) => P.find((x) => x.id === id);
+  const VL = {};
+  const GROUPS = (() => {
+    const seen = new Set(); const out = [];
+    P.forEach((p) => {
+      if (seen.has(p.id)) return;
+      const f = FAMS.find((x) => x.members.some((m) => m[0] === p.id));
+      if (f) {
+        f.members.forEach((m) => { seen.add(m[0]); VL[m[0]] = m[1]; });
+        out.push({ gid: f.id, name: f.name, cat: p.cat, vlabel: f.vlabel, intro: f.intro, variants: f.members.map((m) => byId(m[0])) });
+      } else { seen.add(p.id); out.push({ gid: p.id, name: p.name, cat: p.cat, variants: [p] }); }
+    });
+    return out;
+  })();
+  const G = (gid) => GROUPS.find((g) => g.gid === gid);
+  const vlabel = (p) => VL[p.id] || (p.grams ? p.grams + 'g' : p.name);
+  const vis = (g) => g.variants.filter((p) => (S.fill === 'Any' || (p.grams && p.grams + 'g' === S.fill)) && (!S.size || hasSize(p, S.size)));
+  const selOf = (g, list) => { const id = S.sel[g.gid]; if (id && list.some((p) => p.id === id)) return byId(id); return list.length === 1 ? list[0] : null; };
+  const fillTxt = (list) => { const u = [...new Set(list.filter((p) => p.grams).map((p) => p.grams))].sort((a, b) => a - b); return u.length ? u.map((n) => n + 'g').join(' / ') + ' fill' : ''; };
+  const priceTxt = (list, v) => { if (v) return money(v.price); const a = list.map((p) => p.price); const lo = Math.min(...a); return lo === Math.max(...a) ? money(lo) : 'From ' + money(lo); };
+  function vselHtml(g, list, v) {
+    if (list.length < 2) return '';
+    return `<select class="vsel" data-gid="${g.gid}" aria-label="${esc(g.vlabel)} for ${esc(g.name)}"><option value="">${esc(g.vlabel)}</option>${list.map((p) => `<option value="${p.id}"${v && v.id === p.id ? ' selected' : ''}>${esc(vlabel(p))}, ${money(p.price)}</option>`).join('')}</select>`;
+  }
+
   // ---------- list ----------
   function visible() {
-    const list = P.filter((p) => (S.cat === 'All' || p.cat === S.cat)
-      && (S.fill === 'Any' || (p.grams && p.grams + 'g' === S.fill))
-      && (!S.size || hasSize(p, S.size))
-      && (!S.q || (p.name + ' ' + p.cat + ' ' + p.sku).toLowerCase().includes(S.q)));
-    if (S.sort === 'lo') list.sort((a, b) => a.price - b.price);
-    if (S.sort === 'hi') list.sort((a, b) => b.price - a.price);
+    const list = GROUPS.filter((g) => (S.cat === 'All' || g.cat === S.cat) && vis(g).length
+      && (!S.q || (g.name + ' ' + g.cat + ' ' + g.variants.map((p) => p.sku + ' ' + p.name).join(' ')).toLowerCase().includes(S.q)));
+    const lo = (g) => Math.min(...vis(g).map((p) => p.price)); const hi = (g) => Math.max(...vis(g).map((p) => p.price));
+    if (S.sort === 'lo') list.sort((a, b) => lo(a) - lo(b));
+    if (S.sort === 'hi') list.sort((a, b) => hi(b) - hi(a));
     if (S.sort === 'az') list.sort((a, b) => a.name.localeCompare(b.name));
     return list;
   }
   function renderChips() {
     const cats = $('#cats'), fills = $('#fills');
     if (cats) cats.innerHTML = CATS.map((c) => {
-      const n = c === 'All' ? P.length : P.filter((p) => p.cat === c).length;
+      const n = c === 'All' ? GROUPS.length : GROUPS.filter((g) => g.cat === c).length;
       return `<button class="chip" aria-pressed="${S.cat === c}" data-cat="${esc(c)}">${esc(c)}<span class="n">${n}</span></button>`;
     }).join('');
     if (fills) fills.innerHTML = FILLS.map((c) => `<button class="chip" aria-pressed="${S.fill === c}" data-fill="${c}">${esc((CFG.fillLabels && CFG.fillLabels[c]) || c)}</button>`).join('');
   }
-  function cardHtml(p) {
-    const meta = `${esc(p.cat)}${p.grams ? ' · ' + p.grams + 'g fill' : ''}`;
+  function cardHtml(g) {
+    const list = vis(g); const v = selOf(g, list); const rep = v || list[0];
+    const meta = `${esc(g.cat)}${fillTxt(v ? [v] : list) ? ' · ' + fillTxt(v ? [v] : list) : ''}`;
+    const price = priceTxt(list, v);
     if (CFG.card === 'tile') return `
-      <article class="card tile" data-id="${p.id}">
-        <button class="art" data-view="${p.id}" aria-label="Quick view, ${esc(p.name)}">${art(p)}</button>
+      <article class="card tile" data-id="${g.gid}" data-gid="${g.gid}">
+        <button class="art" data-view="${g.gid}" aria-label="Quick view, ${esc(g.name)}">${art(rep)}</button>
         <div class="body">
-          <h3>${esc(p.name)}</h3>
-          <div class="meta"><span>${meta}</span><span class="price">${money(p.price)}</span></div>
-          <button class="add" data-view="${p.id}">${p.opts ? 'Choose options' : 'Quick view'}</button>
+          <h3>${esc(g.name)}</h3>
+          <div class="meta"><span>${meta}</span><span class="price">${price}</span></div>
+          <button class="add" data-view="${g.gid}">${rep.opts || list.length > 1 ? 'Choose options' : 'Quick view'}</button>
         </div>
       </article>`;
     return `
-      <article class="card" data-id="${p.id}">
-        <button class="art" data-view="${p.id}" aria-label="Quick view, ${esc(p.name)}">${art(p)}</button>
+      <article class="card" data-id="${g.gid}" data-gid="${g.gid}">
+        <button class="art" data-view="${g.gid}" aria-label="Quick view, ${esc(g.name)}">${art(rep)}</button>
         <div class="body">
-          <h3>${esc(p.name)}</h3>
-          <div class="meta"><span>${meta}</span><span>SKU ${esc(p.sku)}</span></div>
-          <div class="price">${money(p.price)}</div>
-          ${optsHtml(p)}
-          <div class="row"><button class="add" data-add="${p.id}">Add to cart</button></div>
+          <h3>${esc(g.name)}</h3>
+          <div class="meta"><span>${meta}</span><span>${v ? 'SKU ' + esc(v.sku) : ''}</span></div>
+          <div class="price">${price}</div>
+          <div class="opts">${vselHtml(g, list, v)}</div>
+          ${v ? optsHtml(v) : (list.length > 1 && rep.opts ? '<div class="opts"><select disabled aria-label="Size"><option>Size</option></select></div>' : '')}
+          <div class="row"><button class="add" data-add="${g.gid}">Add to cart</button></div>
           <div class="hint" aria-live="polite"></div>
-          <button class="link" data-view="${p.id}">Quick view</button>
+          <button class="link" data-view="${g.gid}">Quick view</button>
         </div>
       </article>`;
   }
@@ -154,18 +183,21 @@
       </footer>`;
   }
 
-  function renderModal(id) {
-    const p = P.find((x) => x.id === id);
-    $('#modal').innerHTML = `<div class="box" role="dialog" aria-modal="true" aria-label="${esc(p.name)}">
-      <div class="pic">${art(p)}</div>
+  function renderModal(gid, vid) {
+    const g = G(gid); const list = vis(g).length ? vis(g) : g.variants;
+    const v = vid ? byId(vid) : selOf(g, list); const rep = v || list[0];
+    S.msel = v ? v.id : '';
+    $('#modal').innerHTML = `<div class="box" role="dialog" aria-modal="true" aria-label="${esc(g.name)}">
+      <div class="pic">${art(rep)}</div>
       <div class="txt"><button class="x" data-close aria-label="Close">×</button>
-        <h2>${esc(p.name)}</h2>
-        <div class="meta" style="color:var(--muted);font-size:14px">SKU ${esc(p.sku)} · ${esc(p.cat)}${p.grams ? ' · ' + p.grams + 'g fill' : ''}</div>
-        <div class="price">${money(p.price)}</div>
-        <p>${esc(p.short)}</p>
-        <ul>${p.feats.map((f) => `<li>${esc(f)}</li>`).join('')}</ul>
-        ${optsHtml(p)}
-        <div class="row"><button class="add" data-madd="${p.id}">Add to cart</button></div>
+        <h2>${esc(g.name)}</h2>
+        <div class="meta" style="color:var(--muted);font-size:14px">${v ? 'SKU ' + esc(v.sku) + ' · ' : ''}${esc(g.cat)}${fillTxt(v ? [v] : list) ? ' · ' + fillTxt(v ? [v] : list) : ''}</div>
+        <div class="price">${priceTxt(list, v)}</div>
+        <p>${esc(v || !g.intro ? rep.short : g.intro)}</p>
+        <ul>${rep.feats.map((f) => `<li>${esc(f)}</li>`).join('')}</ul>
+        <div class="opts">${vselHtml(g, list, v)}</div>
+        ${v ? optsHtml(v) : (list.length > 1 && rep.opts ? '<div class="opts"><select disabled aria-label="Size"><option>Size</option></select></div>' : '')}
+        <div class="row"><button class="add" data-madd="${g.gid}">Add to cart</button></div>
         <div class="hint" id="mh" aria-live="polite"></div>
       </div></div>`;
   }
@@ -196,16 +228,21 @@
     if (t.dataset.cat) { S.cat = t.dataset.cat; render(); }
     else if (t.dataset.fill) { S.fill = t.dataset.fill; render(); }
     else if (t.dataset.add) {
-      const card = t.closest('.card'); const p = P.find((x) => x.id === t.dataset.add); const c = pick(card);
-      if (c.miss) { card.querySelector('.hint').textContent = 'Pick a ' + c.miss.dataset.label.toLowerCase() + ' first.'; c.miss.focus(); return; }
-      card.querySelector('.hint').textContent = 'Added to cart.';
-      addToCart(p.id, c.size, 1);
+      const card = t.closest('.card'); const g = G(t.dataset.add); const list = vis(g); const v = selOf(g, list);
+      const hint = card.querySelector('.hint');
+      if (!v) { hint.textContent = 'Pick a ' + g.vlabel.toLowerCase() + ' first.'; const vs = card.querySelector('.vsel'); if (vs) vs.focus(); return; }
+      const c = pick(card);
+      if (c.miss) { hint.textContent = 'Pick a ' + c.miss.dataset.label.toLowerCase() + ' first.'; c.miss.focus(); return; }
+      hint.textContent = 'Added to cart.';
+      addToCart(v.id, c.size, 1);
     }
-    else if (t.dataset.view) { renderModal(t.dataset.view); openLayer('modal'); }
+    else if (t.dataset.view) { const g = G(t.dataset.view); const v = selOf(g, vis(g)); renderModal(g.gid, v ? v.id : ''); openLayer('modal'); }
     else if (t.dataset.madd) {
-      const p = P.find((x) => x.id === t.dataset.madd); const c = pick($('#modal'));
+      const g = G(t.dataset.madd); const vid = S.msel;
+      if (!vid) { $('#mh').textContent = 'Pick a ' + g.vlabel.toLowerCase() + ' first.'; const vs = $('#modal .vsel'); if (vs) vs.focus(); return; }
+      const c = pick($('#modal'));
       if (c.miss) { $('#mh').textContent = 'Pick a ' + c.miss.dataset.label.toLowerCase() + ' first.'; c.miss.focus(); return; }
-      addToCart(p.id, c.size, 1); renderCart(); openLayer('cart');
+      addToCart(vid, c.size, 1); renderCart(); openLayer('cart');
     }
     else if (t.id === 'fab' || t.dataset.openCart !== undefined) { renderCart(); openLayer('cart'); }
     else if (t.dataset.close !== undefined || t.id === 'scrim') closeLayer();
@@ -217,7 +254,15 @@
   });
   $('#scrim').addEventListener('click', closeLayer);
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !$('#layer').hidden) closeLayer(); });
-  document.addEventListener('change', (e) => { if (e.target.id === 'zn') { S.zone = e.target.value; renderCart('checkout'); } });
+  document.addEventListener('change', (e) => {
+    if (e.target.id === 'zn') { S.zone = e.target.value; renderCart('checkout'); return; }
+    if (!e.target.classList.contains('vsel')) return;
+    const gid = e.target.dataset.gid; const val = e.target.value;
+    if (e.target.closest('#modal')) { renderModal(gid, val); const n = $('#modal .vsel'); if (n) n.focus(); return; }
+    const card = e.target.closest('.card'); S.sel[gid] = val;
+    card.outerHTML = cardHtml(G(gid));
+    const n = document.querySelector(`.card[data-gid="${gid}"] .vsel`); if (n) n.focus();
+  });
   document.addEventListener('submit', (e) => { if (e.target.id === 'co') { e.preventDefault(); S.cart = []; S.zone = null; updateFab(); renderCart('done'); } });
 
   const q = $('#q'); if (q) q.addEventListener('input', (e) => { S.q = e.target.value.trim().toLowerCase(); renderGrid(); });

@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Skyline Equine | Option 2, Catalogue Pro</title>
+<link rel="icon" href="../images/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@600;700;800&display=swap">
+<link rel="stylesheet" href="../shared/shop.css">
+<style>
+/* Option 2, Catalogue Pro: light, utilitarian, sidebar filters, dense product grid. Built for people who know what they need. */
+:root {
+  --bg: #f3f5f8; --surface: #ffffff; --ink: #0f1b2d; --muted: #5a6779; --line: #dde3ea; --sky: #eef2f7;
+  --accent: #c8102e; --accent-ink: #ffffff; --good: #14794a; --radius: 6px; --maxw: 1320px; --gap: 16px; --card-min: 210px;
+  --art-ratio: 1 / 1;
+  --font-display: "Inter Tight", "Inter", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --bg: #0b121c; --surface: #131d2b; --ink: #eaf0f7; --muted: #93a2b5; --line: #243246; --sky: #1a2638; --accent: #ff4d63; --accent-ink: #1a0509; --good: #52c892; color-scheme: dark; }
+}
+:root[data-theme="dark"] { --bg: #0b121c; --surface: #131d2b; --ink: #eaf0f7; --muted: #93a2b5; --line: #243246; --sky: #1a2638; --accent: #ff4d63; --accent-ink: #1a0509; --good: #52c892; color-scheme: dark; }
+
+.util { background: var(--ink); color: var(--bg); font-size: 13px; margin-inline: calc(50% - 50vw); padding: 7px max(16px, env(safe-area-inset-left, 0px)); text-align: center; }
+.util b { font-weight: 600; }
+header.top { display: flex; align-items: center; gap: 20px; padding-block: 14px; flex-wrap: wrap; }
+.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; font-family: var(--font-display); font-weight: 800; font-size: 20px; letter-spacing: -0.01em; }
+.logo { width: 40px; height: 40px; border-radius: 6px; flex: none; }
+.search { flex: 1; min-width: 200px; }
+.search input { width: 100%; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 11px 14px; }
+.cartbtn { background: var(--accent); color: var(--accent-ink); border: 0; border-radius: var(--radius); padding: 11px 18px; font-weight: 700; }
+.cartbtn b { margin-left: 6px; font-variant-numeric: tabular-nums; }
+
+.banner { background: var(--ink); color: var(--bg); border-radius: var(--radius); padding: 28px 32px; display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap; margin-bottom: 20px; }
+.banner h1 { font-size: clamp(26px, 4vw, 40px); font-weight: 800; letter-spacing: -0.02em; }
+.banner p { opacity: 0.75; margin-top: 6px; max-width: 56ch; }
+.banner .pills { display: flex; gap: 8px; flex-wrap: wrap; }
+.banner .pills span { border: 1px solid rgba(255, 255, 255, 0.28); border-radius: 999px; padding: 6px 14px; font-size: 14px; }
+:root[data-theme="dark"] .banner, :root:not([data-theme="light"]) .banner { background: var(--surface); color: var(--ink); border: 1px solid var(--line); }
+@media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) .banner { background: var(--ink); color: #fff; } }
+
+.layout { display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: 24px; align-items: start; }
+aside.filters { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; position: sticky; top: 12px; display: grid; gap: 20px; }
+aside.filters h2 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 10px; font-family: var(--font-body); font-weight: 600; }
+aside.filters .chips { flex-direction: column; gap: 4px; }
+aside.filters .chip { border: 0; background: none; border-radius: 4px; padding: 8px 10px; width: 100%; justify-content: space-between; font-weight: 500; }
+aside.filters .chip:hover { background: var(--sky); }
+aside.filters .chip[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+aside.filters #fills { flex-direction: row; flex-wrap: wrap; gap: 6px; }
+aside.filters #fills .chip { width: auto; border: 1px solid var(--line); border-radius: 999px; padding: 5px 12px; font-size: 14px; }
+aside.filters select { width: 100%; background: var(--bg); border: 1px solid var(--line); border-radius: var(--radius); padding: 9px; }
+.bar { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+.bar select { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 8px 10px; }
+.card .art { border-bottom: 1px solid var(--line); }
+.card h3 { font-family: var(--font-body); font-weight: 600; font-size: 15px; }
+.card .price { font-family: var(--font-display); font-size: 20px; }
+.card .meta { font-size: 13px; }
+.vault { margin-top: 28px; background: var(--surface); border: 1px solid var(--line); }
+.info { margin-top: 40px; padding: 28px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
+@media (max-width: 860px) {
+  .layout { grid-template-columns: minmax(0, 1fr); }
+  aside.filters { position: static; }
+  aside.filters #cats { flex-direction: row; flex-wrap: wrap; }
+  aside.filters #cats .chip { width: auto; border: 1px solid var(--line); border-radius: 999px; }
+  .banner { padding: 22px; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="util"><b>Free shipping over $100</b> across Canada &middot; orders ship Wednesdays &middot; 30 day exchanges</div>
+  <header class="top">
+    <a class="brand" href="#top"><img class="logo" src="../images/logo.png" alt="Skyline Equine logo" width="40" height="40"><span>Skyline Equine</span></a>
+    <div class="search"><input id="q" type="search" placeholder="Search rugs, liners, masks, SKU" aria-label="Search products"></div>
+    <button class="cartbtn" data-open-cart>Cart<b data-cart-count>0</b></button>
+  </header>
+
+  <div class="banner" id="top">
+    <div>
+      <h1>Bucas rugs, in stock and sized.</h1>
+      <p>Official Bucas distributor in Canada. Filter by fill weight and size, add to cart, done.</p>
+    </div>
+    <div class="pills"><span>Turnouts</span><span>Liners</span><span>Fly &amp; UV</span><span>Coolers</span></div>
+  </div>
+
+  <div class="layout" id="shop">
+    <aside class="filters" aria-label="Filters">
+      <div><h2>Category</h2><div class="chips" id="cats" role="group" aria-label="Category"></div></div>
+      <div><h2>Fill weight</h2><div class="chips" id="fills" role="group" aria-label="Fill weight"></div></div>
+      <div><h2>Size</h2><select id="size" aria-label="Filter by size"></select></div>
+    </aside>
+    <main>
+      <div class="bar"><span class="count" id="count" aria-live="polite"></span>
+        <select id="sort" aria-label="Sort products"><option value="feat">Featured</option><option value="lo">Price, low to high</option><option value="hi">Price, high to low</option><option value="az">Name, A to Z</option></select>
+      </div>
+      <div class="grid" id="grid"></div>
+    </main>
+  </div>
+
+  <div id="vaulting"><div class="vault" data-slot="vault"></div></div>
+  <section class="info" id="ordering" aria-label="Ordering information" data-slot="ordering"></section>
+  <footer class="foot" id="contact" data-slot="footer"></footer>
+</div>
+<script src="../shared/data.js"></script>
+<script>window.SHOP_CONFIG = { card: 'std' };</script>
+<script src="../shared/shop.js" data-base="../"></script>
+</body>
+</html>

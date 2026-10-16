@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Skyline Equine | Option 1, Lookbook</title>
+<link rel="icon" href="../images/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Instrument+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../shared/shop.css">
+<style>
+/* Option 1, Lookbook: photo-led, dark, Bucas black and gold. Big portrait hero, tab rail, tall photo tiles with little chrome. */
+:root {
+  --bg: #0e1419; --surface: #151d24; --ink: #eef1f3; --muted: #9aa8b3; --line: #27333d; --sky: #1b2630;
+  --accent: #d4a84a; --accent-ink: #15110a; --good: #6cc49a; --radius: 3px; --maxw: 1240px; --gap: 36px;
+  --card-min: 290px;
+  --font-display: "Instrument Serif", Georgia, "Times New Roman", serif;
+  --font-body: "Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  color-scheme: dark;
+}
+
+h1, h2, h3 { font-weight: 400; letter-spacing: -0.005em; }
+header.top { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 18px; flex-wrap: wrap; }
+.brand { display: flex; align-items: center; gap: 12px; text-decoration: none; font-family: var(--font-display); font-size: 28px; letter-spacing: 0.01em; }
+.logo { width: 48px; height: 48px; border-radius: 3px; flex: none; }
+nav.main { display: flex; gap: 26px; align-items: center; flex-wrap: wrap; }
+nav.main a, nav.main button { text-decoration: none; background: none; border: 0; padding: 4px 0; font-weight: 500; border-bottom: 1px solid transparent; }
+nav.main a:hover, nav.main button:hover { border-color: var(--accent); }
+nav.main .cartlink b { color: var(--accent); font-variant-numeric: tabular-nums; }
+
+.hero { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr); gap: 56px; align-items: center; padding-block: 28px 56px; }
+.hero h1 { font-size: clamp(46px, 7.4vw, 96px); line-height: 0.98; }
+.hero h1 em { font-style: italic; color: var(--accent); }
+.hero .lede { margin-top: 22px; max-width: 46ch; color: var(--muted); font-size: 18px; }
+.hero .cta { margin-top: 28px; display: flex; gap: 12px; flex-wrap: wrap; }
+.hero .btn { border-color: var(--line); }
+.hero .btn.primary { border-color: var(--accent); }
+.facts { margin-top: 36px; display: flex; gap: 10px 28px; flex-wrap: wrap; color: var(--muted); font-size: 14px; }
+.facts b { color: var(--ink); font-weight: 600; }
+figure.photo { margin: 0; position: relative; }
+figure.photo img { display: block; width: 100%; aspect-ratio: 4 / 5; object-fit: cover; object-position: center 30%; border-radius: 3px; }
+figure.photo figcaption { position: absolute; left: 14px; bottom: 14px; right: 14px; display: flex; justify-content: space-between; align-items: center; gap: 12px; background: rgba(10, 15, 19, 0.82); color: #eef1f3; padding: 10px 14px; border-radius: 3px; font-size: 14px; }
+figure.photo figcaption button { background: none; border: 0; color: #d4a84a; font-weight: 600; text-decoration: underline; padding: 0; }
+
+.rail { display: flex; justify-content: space-between; gap: 16px 28px; align-items: end; flex-wrap: wrap; border-bottom: 1px solid var(--line); padding-bottom: 0; }
+.rail .chips { gap: 22px; flex-wrap: wrap; }
+.rail .chip { background: none; border: 0; border-bottom: 2px solid transparent; border-radius: 0; padding: 10px 0; font-size: 16px; color: var(--muted); }
+.rail .chip:hover { color: var(--ink); }
+.rail .chip[aria-pressed="true"] { background: none; color: var(--ink); border-bottom-color: var(--accent); }
+.rail .tools { padding-bottom: 8px; display: flex; gap: 10px; flex-wrap: wrap; }
+.tools input { width: 200px; max-width: 100%; }
+.sub { display: flex; justify-content: space-between; align-items: center; gap: 12px 24px; flex-wrap: wrap; padding-block: 16px 28px; color: var(--muted); font-size: 14px; }
+.sub .chip { padding: 5px 12px; font-size: 14px; background: transparent; }
+.sub .chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.sub .fills { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+
+.card.tile h3 { font-size: 24px; }
+.card.tile .price { color: var(--accent); font-family: var(--font-body); font-size: 17px; font-weight: 600; }
+.card.tile .art { transition: opacity 0.2s; }
+.card.tile .art:hover { opacity: 0.88; }
+.card.tile .add { border-color: var(--line); }
+
+.band { margin-top: 64px; }
+.vault { border-color: var(--line); background: var(--surface); }
+.info { border-top: 1px solid var(--line); margin-top: 56px; padding-block: 40px 56px; }
+@media (max-width: 800px) {
+  .hero { grid-template-columns: minmax(0, 1fr); gap: 32px; }
+  figure.photo img { aspect-ratio: 1 / 1; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="#top"><img class="logo" src="../images/logo.png" alt="Skyline Equine logo" width="48" height="48"><span>Skyline Equine</span></a>
+    <nav class="main" aria-label="Main">
+      <a href="#shop">Shop</a>
+      <a href="#vaulting">Vaulting</a>
+      <a href="#ordering">Ordering</a>
+      <a href="#contact">Contact</a>
+      <button class="cartlink" data-open-cart>Cart <b data-cart-count>0</b></button>
+    </nav>
+  </header>
+
+  <div class="hero" id="top">
+    <div>
+      <h1>Rugs for first frost <em>and everything after.</em></h1>
+      <p class="lede">Bucas turnouts, liners, fly sheets and coolers, shipped from Langley to barns across Canada. Choose a fill weight, find your size, order any hour.</p>
+      <div class="cta"><a class="btn primary" href="#shop">Shop the range</a><a class="btn" href="#vaulting">Vaulting supplies</a></div>
+      <div class="facts"><span><b>Free shipping</b> over $100</span><span><b>Ships</b> Wednesdays</span><span><b>30 day</b> exchanges</span></div>
+    </div>
+    <figure class="photo">
+      <img src="../images/hero-irish50.jpg" alt="Horse in a black Bucas Irish Turnout running through fresh snow">
+      <figcaption><span>Bucas Irish Turnout &amp; Neck 50g</span><button data-view="irish50">View, $230.00</button></figcaption>
+    </figure>
+  </div>
+
+  <section id="shop" aria-label="Shop">
+    <div class="rail">
+      <div class="chips" id="cats" role="group" aria-label="Category"></div>
+      <div class="tools">
+        <input id="q" type="search" placeholder="Search" aria-label="Search products">
+        <select id="sort" aria-label="Sort products"><option value="feat">Featured</option><option value="lo">Price, low to high</option><option value="hi">Price, high to low</option><option value="az">Name, A to Z</option></select>
+      </div>
+    </div>
+    <div class="sub">
+      <div class="fills"><span>Fill weight</span><div class="chips" id="fills" role="group" aria-label="Fill weight"></div></div>
+      <span class="count" id="count" aria-live="polite"></span>
+    </div>
+    <div class="grid" id="grid"></div>
+  </section>
+
+  <div class="band" id="vaulting"><div class="vault" data-slot="vault"></div></div>
+  <section class="info" id="ordering" aria-label="Ordering information" data-slot="ordering"></section>
+  <footer class="foot" id="contact" data-slot="footer"></footer>
+</div>
+<script src="../shared/data.js"></script>
+<script>window.SHOP_CONFIG = { card: 'tile' };</script>
+<script src="../shared/shop.js" data-base="../"></script>
+</body>
+</html>

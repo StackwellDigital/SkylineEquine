@@ -4,7 +4,10 @@ Static demo of a redesigned skylineequine.com with a working Bucas cart and mock
 Built by Stackwell Digital. No build step, no backend. Products and prices come from skylineequine.com.
 
 ## Files
-- `index.html` the whole site (HTML, CSS, JS)
+- `index.html` chooser page linking the options
+- `option-1/`, `option-2/`, `option-3/` three layout directions (Lookbook, Catalogue Pro, Rug Finder)
+- `original/` first single-file draft
+- `shared/` data.js (products and options), shop.js (filters, cart, checkout), shop.css
 - `images/` product photos (`<product id>.jpg`) and `logo.png`
 - `images.tsv` product id to Wix media file map
 - `scripts/fetch-images.sh` re-downloads the photos into `images/`
